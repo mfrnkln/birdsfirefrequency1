@@ -1,0 +1,87 @@
+species,speciescode,scientificname,commonname,incidencecodeH,incidenceH,mobility2,bodymass
+1,AUBT,Alectura lathami,Australian Brush-turkey,Uncommon,2,Sedentary,2230
+2,AUKP,Alisterus scapularis,Australian King-Parrot,Moderately_common,3,Migratory,207
+3,AUMP,Cracticus tibicen,Australian Magpie,Uncommon,2,Nomadic,280
+4,AURV,Corvus coronoides,Australian Raven,Moderately_common,3,Sedentary,593
+5,BELM,Manorina melanophrys,Bell Miner,Uncommon,2,Sedentary,31.33255184
+6,BFCS,Coracina novaehollandiae,Black-faced Cuckoo-shrike,Moderately_common,3,Migratory,115
+7,BFMO,Monarcha melanopsis,Black-faced Monarch,Uncommon,2,Migratory,22.55
+8,BHHE,Melithreptus brevirostris,Brown-headed Honeyeater,Moderately_common,3,Nomadic,15.32833333
+9,BHON,Lichmera indistincta,Brown Honeyeater,Rare,1,Nomadic,10.75673615
+10,BRBW,Phaps elegans,Brush Bronzewing,Uncommon,2,Sedentary,203
+11,BRCD,Macropygia amboinensis,Brown Cuckoo-Dove,Rare,1,Migratory,202
+12,BRCK,Cacomantis variolosus,Brush Cuckoo,Uncommon,2,Migratory,37.35
+13,BRGH,Accipiter fasciatus,Brown Goshawk,Moderately_common,3,Migratory,371
+14,BRGY,Gerygone mouki,Brown Gerygone,Uncommon,2,Sedentary,5.416666667
+15,BRTB,Acanthiza pusilla,Brown Thornbill,Common,4,Sedentary,9.044444444
+16,CBCK,Scythrops novaehollandiae,Channel-billed Cuckoo,Moderately_common,3,Migratory,684
+17,CICB,Coracina tenuirostris,Cicadabird,Moderately_common,3,Migratory,65
+18,COBB,Turdus merula,Common Blackbird,Rare,1,Sedentary,105
+19,COBW,Phaps chalcoptera,Common Bronzewing,Uncommon,2,Nomadic,331
+20,CRHE,Phylidonyris pyrrhopterus,Crescent Honeyeater,Rare,1,Migratory,15.01130412
+21,CRHW,Hylacola pyrrhopygia,Chestnut-rumped Heathwren,Uncommon,2,Sedentary,17.01111111
+22,CROS,Platycercus elegans,Crimson Rosella,Common,4,Sedentary,126
+23,CRST,Falcunculus frontatus,Crested Shrike-tit,Rare,1,Sedentary,25.65112126
+24,DUWS,Artamus cyanopterus,Dusky Woodswallow,Uncommon,2,Migratory,34.5125
+25,EASB,Acanthorhynchus tenuirostris,Eastern Spinebill,Common,4,Migratory,10.46133631
+26,EAWB,Psophodes olivaceus,Eastern Whipbird,Moderately_common,3,Sedentary,58.725
+27,EAYR,Eopsaltria australis,Eastern Yellow Robin,Common,4,Sedentary,19.39946172
+28,EROS,Platycercus eximius,Eastern Rosella,Rare,1,Sedentary,104
+29,FLMR,Petroica phoenicea,Flame Robin,Uncommon,2,Migratory,13.21157062
+30,FTCK,Cacomantis flabelliformis,Fan-tailed Cuckoo,Common,4,Migratory,49.85
+31,GCUR,Strepera versicolor,Grey Currawong,Uncommon,2,Migratory,388
+32,GGCT,Callocephalon fimbriatum,Gang-Gang Cockatoo,Uncommon,2,Migratory,257
+33,GLDW,Pachycephala pectoralis,Golden Whistler,Moderately_common,3,Migratory,38.5
+34,GRBB,Cracticus torquatus,Grey Butcherbird,Moderately_common,3,Sedentary,90.78594805
+35,GRFT,Rhipidura albiscapa,Grey Fantail,Common,4,Migratory,7.82381427
+36,GRST,Colluricincla harmonica,Grey Shrike-thrush,Common,4,Migratory,67.48991003
+37,HBCK,Chalcites basalis,Horsefield's Bronze-Cuckoo,Uncommon,2,Migratory,23.15
+38,JWNT,Microeca fascinans,Jacky Winter,Rare,1,Sedentary,14.47319401
+39,KOEL,Eudynamys orientalis,Eastern Koel,Uncommon,2,Migratory,243
+40,LBSW,Sericornis magnirostra,Large-billed Scrubwren,Rare,1,Sedentary,9.654654088
+41,LEFC,Myiagra rubecula,Leaden Flycatcher,Common,4,Migratory,13.53570346
+42,LEHE,Meliphaga lewinii,Lewin's Honeyeater,Moderately_common,3,Sedentary,33.25
+43,LKKB,Dacelo novaeguineae,Laughing Kookaburra,Common,4,Sedentary,312
+44,MTBD,Dicaeum hirundinaceum,Mistletoebird,Moderately_common,3,Migratory,8.75
+45,NANK,Falco cenchroides,Nankeen Kestrel,Uncommon,2,Migratory,179
+46,NHHE,Phylidonyris novaehollandiae,New Holland Honeyeater,Common,4,Sedentary,20.94024672
+47,NSYF,Philemon corniculatus,Noisy Friarbird,Common,4,Nomadic,100
+48,OBOR,Oriolus sagittatus,Olive-backed Oriole,Moderately_common,3,Migratory,97.17222222
+49,PCUR,Strepera graculina,Pied Currawong,Common,4,Migratory,308
+50,PFCN,Falco peregrinus,Peregrine Falcon,Moderately_common,3,Sedentary,1090
+51,PLTB,Pycnoptilus floccosus,Pilotbird,Uncommon,2,Sedentary,30.35416667
+52,RBFI,Neochmia temporalis,Red-browed Finch,Moderately_common,3,Migratory,9.52906051
+53,RBTC,Climacteris erythrops,Red-browed Treecreeper,Uncommon,2,Sedentary,23.47003106
+54,RECR,Petroica goodenovii,Red-capped Robin,Rare,1,Migratory,8.717791174
+55,REDW,Anthochaera carunculata,Red Wattlebird,Moderately_common,3,Nomadic,90.90401235
+56,RLOR,Trichoglossus haematodus,Rainbow Lorikeet,Uncommon,2,Nomadic,126
+57,ROSR,Petroica rosea,Rose Robin,Uncommon,2,Migratory,8.625
+58,RUFT,Rhipidura rufifrons,Rufous Fantail,Uncommon,2,Migratory,9.669583333
+59,RUFW,Pachycephala rufiventris,Rufous Whistler,Common,4,Migratory,23.5
+60,SAFC,Myiagra cyanoleuca,Satin Flycatcher,Rare,1,Migratory,17.4
+61,SAKF,Todiramphus sanctus,Sacred Kingfisher,Moderately_common,3,Migratory,53.07219067
+62,SBCK,Chrysococcyx lucidus,Shining Bronze-Cuckoo,Moderately_common,3,Migratory,24.15
+63,SBOW,Ptilonorhynchus violaceus,Satin Bowerbird,Moderately_common,3,Nomadic,202
+64,SCCT,Cacatua galerita,Sulphur-crested Cockatoo,Uncommon,2,Migratory,735
+65,SCHE,Myzomela sanguinolenta,Scarlet Honeyeater,Uncommon,2,Migratory,8.303401832
+66,SEYE,Zosterops lateralis,Silvereye,Common,4,Migratory,11.69651855
+67,SLYB,Menura novaehollandiae,Superb Lyrebird,Common,4,Sedentary,1080
+68,SOEW,Stipiturus malachurus,Southern Emu-wren,Rare,1,Sedentary,7.2
+69,SPAR,Pardalotus punctatus,Spotted Pardalote,Common,4,Migratory,8.473562957
+70,SPQT,Cinclosoma punctatum,Spotted Quail-thrush,Moderately_common,3,Sedentary,112
+71,STTB,Acanthiza lineata,Striated Thornbill,Common,4,Sedentary,7.325
+72,SUFW,Malurus cyaneus,Superb Fairy-wren,Uncommon,2,Sedentary,10.57029098
+73,VAFW,Malurus lamberti,Variegated Fairy-wren,Moderately_common,3,Sedentary,7.984376634
+74,WBCS,Coracina papuensis,White-bellied Cuckoo-shrike,Uncommon,2,Migratory,65.895
+75,WBIL,Smicrornis brevirostris,Weebill,Uncommon,2,Sedentary,5.725
+76,WBSW,Sericornis frontalis,White-browed Scrubwren,Common,4,Sedentary,13.07053108
+77,WBWS,Artamus superciliosus,White-browed Woodswallow,Rare,1,Nomadic,35.29444444
+78,WEHE,Lichenostomus leucotis,White-eared Honeyeater,Moderately_common,3,Migratory,21.61747448
+79,WNHE,Melithreptus lunatus,White-naped Honeyeater,Moderately_common,3,Migratory,14.8820122
+80,WONP,Leucosarcia melanoleuca,Wonga Pigeon,Uncommon,2,Sedentary,429
+81,WTGY,Gerygone olivacea,White-throated Gerygone,Uncommon,2,Migratory,6.483333333
+82,WTTC,Cormobates leucophaea,White-throated Treecreeper,Common,4,Sedentary,20.68913001
+83,YETB,Acanthiza nana,Yellow Thornbill,Rare,1,Sedentary,6.466666667
+84,YFHE,Lichenostomus chrysops,Yellow-faced Honeyeater,Common,4,Migratory,16.15833333
+85,YTBC,Calyptorhynchus funereus,Yellow-tailed Black Cockatoo,Moderately_common,3,Nomadic,661
+86,YTSW,Sericornis citreogularis,Yellow-throated Scrubwren,Rare,1,Sedentary,16.59626225

@@ -1,0 +1,337 @@
+---
+title: "birdsfirefrequency1"
+date: "5/07/2021"
+output:
+  word_document: default
+  html_document: default
+editor_options: 
+  chunk_output_type: console
+---
+  
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(here)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(tidyr)
+library(runjags)
+library(gridExtra)
+
+# Set to TRUE to force re-fitting of models or FALSE to load
+# previously saved outputs
+REFIT_MODEL <- FALSE
+
+# Cache directory for models
+MODEL_DIR <- here("models")
+if (!dir.exists(MODEL_DIR)) {
+  dir.create(MODEL_DIR)
+}
+
+# convenience function to load contents of an RData file
+# into a named object
+load_from <- function(.path) {
+  load(.path)
+  objs <- ls(all.names = FALSE)
+  get(objs[1], inherits = FALSE)
+}
+
+# ggplot default theme
+theme_set( theme_bw() )
+
+```  
+
+
+## Avian movement groups and forest fire frequency
+
+This document contains code written by Michael Bedward and Michael Franklin for the multispecies occupancy model presented in:  
+Michael J. M. Franklin, Richard E. Major, Michael Bedward, and Ross A. Bradstock.  
+'Relative avian mobility linked to use of fire-affected resources in forested landscapes'.  
+Accepted for publication in Forest Ecology and Management on 23/06/2021.  
+
+### Predictor variables
+*Occupancy submodel:*  
+MFC (fire frequency) was the area-weighted mean number of fires 1971-2002 over each 33 ha site.  
+L1785 was the presence (1) or absence (0) of long-unburnt dry sclerophyll forest (> 5 ha) external to the site, but within a radius of 1,785 m of the site centre (10 km^2).   
+NPL established whether sites were on the Newnes Plateau (NPL = 1) or Blue Mountains (NPL = 0).    
+*Detection submodel:*    
+ESD was the standard deviation of elevation over each site.        
+  
+### Bird data  
+Survey data are presence or absence of species for each site and replicate survey session.  
+
+```{r}
+
+##### read in the bird data
+path <- here("data", "all_records.csv")
+DAT.survey <- read.csv(path, stringsAsFactors = FALSE)
+
+# Species codes, names and info (note, 74 of the 86 listed species were recorded in these sites)
+path <- here("data", "species_lookup2.csv")
+
+SpeciesLookup <- read.csv(path, stringsAsFactors = FALSE) %>%
+  # Reduce to species present in the survey data
+  dplyr::filter(speciescode %in% DAT.survey$speciescode) %>%
+  
+  # Add an integer index for model use and discard existing index var
+  select(-species) %>%
+  arrange(speciescode) %>%
+  mutate(species = row_number())
+
+# For each species and site, sum the number of reps in which a detection was recorded
+dat.counts <- DAT.survey %>%
+  group_by(site, speciescode) %>%
+  summarize(nobs = sum(observed)) %>%
+  ungroup() %>%
+
+  # Subset to species in SpeciesLookup
+  filter(speciescode %in% SpeciesLookup$speciescode) %>%
+
+  # Convert to wide format
+  tidyr::spread(speciescode, nobs) %>%
+  
+  # Ensure site order
+  arrange(site) %>%
+  select(-site) %>%
+  as.matrix()
+
+```
+
+Prior incidence groups for species. The suffix 'H' in 'incidenceH' and 'incidencecodeH' below denotes the refined (by habitat) version of the incidence groups for species priors.
+
+```{r}
+
+incidenceHLevels <- SpeciesLookup %>%
+  group_by(incidenceH, incidencecodeH) %>%
+  summarize(nspecies = n()) %>%
+  arrange(incidenceH)
+
+SpeciesLookup <- SpeciesLookup %>%
+  mutate(incidencecodeH = factor(incidencecodeH, levels = incidenceHLevels$incidencecodeH))
+
+```
+
+Site attributes.
+
+```{r}
+
+path <- here("data", "sites_lookup2.csv")
+
+SitesLookup <- read.csv(path, stringsAsFactors = FALSE) 
+
+```
+
+
+## Model G
+
+### JAGS code
+
+```{r}
+
+model_G.code <- "model {
+  for (site in 1:nsites) {
+    for (sp in 1:nspp) {
+      # Model the observations
+      num.obs[site,sp] ~ dbin(present[site,sp] * p.detect[site,sp], nreps[site])
+
+      # Model occupancy: the true (unknown) presences
+      present[site,sp] ~ dbern(p.present[site,sp])
+
+      logit(p.present[site, sp]) <- 
+        beta.sp[sp] +
+        beta.site[site] +
+        beta.NPL * NPL[site] +
+        beta.MFC[sp] * MFC[site] +
+        beta.L1785[sp] * L1785pa[site]
+    }
+
+    beta.site[site] ~ dnorm(0, sd.site^(-2))
+  }
+  
+  # Standard deviation of site-level random effects
+  sd.site ~ dexp(1)
+  
+  # Area effect for NPL
+  beta.NPL ~ dnorm(0, 1)
+
+##################
+
+  for (sp in 1:nspp) {
+    # The intercept for each species (beta.sp) is drawn from a Normal
+    # distribution for the corresponding prior incidence group with
+    # mean mu.sp.grp[grp] and common standard deviation sd.sp
+    #
+    beta.sp[sp] ~ dnorm(mu.sp.grp[incidgrp[sp]], sd.sp^(-2))
+  }
+
+  # Standard deviaion of the species intercepts.
+  sd.sp ~ dexp(1)
+  
+  # Priors for incidenceH group means ('mu.sp.grp')
+  for (i in 1:nincidgrps) {
+    unordered.sp.grp[i] ~ dnorm(beta0, 0.1)
+  }
+  mu.sp.grp <- sort(unordered.sp.grp)
+
+  # Grand intercept
+  beta0 ~ dnorm(0, 1)
+  
+######################
+
+  # Weighted mean fire count effect. 
+  # The parameter value for each species is drawn from a distribution
+  # for the corresponding mobility group.
+  for (sp in 1:nspp) {
+    beta.MFC[sp] ~ dnorm(mu.MFC.mobility[mobility[sp]], 
+                         sd.MFC^(-2))
+  }
+  sd.MFC ~ dexp(1)
+  
+  # Group-level means
+  for (grp in 1:nmobility) {
+    mu.MFC.mobility[grp] ~ dnorm(0, 1)
+  }
+  
+######################
+
+  # Effect of presence of long-unburnt dry sclerophyll forest within site radius.
+  # The parameter value for each species is drawn from a distribution
+  # for the corresponding mobility group.
+  # 
+  for (sp in 1:nspp) {
+    beta.L1785[sp] ~ dnorm(mu.L1785.mobility[mobility[sp]], sd.L1785^(-2))
+  }
+  sd.L1785 ~ dexp(1)
+  
+  # Group-level means
+  for (grp in 1:nmobility) {
+    mu.L1785.mobility[grp] ~ dnorm(0, 1)
+  }
+  
+######################
+
+# Detection model
+
+  for (sp in 1:nspp) {
+    for (site in 1:nsites) {
+      # A general level of detectability for the species plus the modifying,
+      # species-specifc influence of elevation variability
+      
+      logit(p.detect[site, sp]) <- gamma.sp[sp] + gamma.ESD[sp]*ESD[site]
+    }
+    
+    gamma.sp[sp] ~ dnorm(gamma.sp0, 1)
+    gamma.ESD[sp] ~ dnorm(gamma.ESD.0, 1)
+  }
+  
+  gamma.sp0 ~ dnorm(0, 1)
+  gamma.ESD.0 ~ dnorm(0, 1)
+}"
+
+```
+
+
+### Model data
+
+```{r}
+
+nsites <- nrow(dat.counts)
+nspp <- ncol(dat.counts)
+
+dat.preds <- SitesLookup %>%
+  # Ensure we have site order
+  arrange(site) %>%
+  
+  select(site, NPL, MFC, L1785, ESD) %>%
+  
+  mutate(ESDs = scale(ESD)[,1],
+         MFCs = scale(MFC)[,1])
+
+# Mobility group as a factor
+fmobility = factor(SpeciesLookup$mobility2, 
+                   levels = c("Migratory", "Nomadic", "Sedentary"))
+
+
+model_G.data <- list(
+  nsites = nsites,
+  nspp = nspp,
+  nreps = rep(10, nsites),
+  num.obs = dat.counts,
+  
+  nincidgrps = nrow(incidenceHLevels),
+  incidgrp = SpeciesLookup$incidenceH,
+  
+  NPL = dat.preds$NPL,
+  ESD = dat.preds$ESDs,
+  MFC = dat.preds$MFCs,
+  L1785pa = ifelse(dat.preds$L1785 > 0, 1, 0),
+  
+  # mobility group for each species
+  mobility = fmobility,
+  
+  nmobility = nlevels(fmobility)
+)
+
+```
+
+
+### Run the model
+
+```{r}
+
+model.path <- file.path(MODEL_DIR, "model_G_allspp.RData")
+
+if (REFIT_MODEL || !file.exists(model.path)) {
+  model_G <- run.jags(
+    model = model_G.code, 
+    monitor = c("beta0", 
+                "beta.sp", "mu.sp.grp", "sd.sp", 
+                "gamma.sp",
+                "beta.site", "sd.site",
+                "beta.NPL",
+                "beta.MFC",
+                "beta.L1785",
+                "mu.MFC.mobility",
+                "mu.L1785.mobility"), 
+    
+    n.chains = 4, 
+    data = model_G.data, 
+    
+    inits = function() {
+      list(beta0 = 0,
+           beta.sp = runif(nspp),
+           beta.site = rep(0, nsites),
+           beta.NPL = 0,
+           mu.MFC.mobility = rep(0, nlevels(fmobility)),
+           mu.L1785.mobility = rep(0, nlevels(fmobility)),
+           gamma.sp = runif(nspp),
+           gamma.ESD = rep(0, nspp))
+    }, 
+    
+    method = "parallel", 
+    sample = 1000,         
+    thin = 25,            
+    burnin = 1000)
+  
+  save(model_G, file = model.path)
+
+} else {
+  # load previously cached model object
+  model_G <- load_from(model.path)
+}
+
+```
+
+
+### Check model convergence
+
+```{r}
+
+x <- summary(model_G)
+
+cat("Min effective samples:", min(x[, "SSeff"]), "\n")
+max.gelman <- cat("Max Gelman-Rubin value:", max(x[, "psrf"]), "\n")
+
+```
